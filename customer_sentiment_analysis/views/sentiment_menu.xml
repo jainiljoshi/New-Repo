@@ -1,0 +1,7 @@
+<odoo>
+  <data>
+    <menuitem id="menu_sentiment_root" name="Sentiment" sequence="20"/>
+    <menuitem id="menu_sentiment_analysis" name="Analyses" parent="menu_sentiment_root" action="action_sentiment_analysis"/>
+    <menuitem id="menu_sentiment_config" name="Configuration" parent="menu_sentiment_root" action="action_sentiment_config"/>
+  </data>
+</odoo>

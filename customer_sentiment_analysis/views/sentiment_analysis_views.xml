@@ -1,0 +1,123 @@
+<odoo>
+  <data>
+    <record id="view_sentiment_analysis_tree" model="ir.ui.view">
+      <field name="name">sentiment.analysis.tree</field>
+      <field name="model">sentiment.analysis</field>
+      <field name="arch" type="xml">
+        <list decoration-success="sentiment in ['very_positive','positive']"
+              decoration-warning="sentiment == 'neutral'"
+              decoration-danger="sentiment in ['negative','very_negative']">
+          <field name="name"/>
+          <field name="partner_id"/>
+          <field name="source_type"/>
+          <field name="sentiment" widget="badge"/>
+          <field name="sentiment_score" widget="progressbar"/>
+          <field name="analysis_date"/>
+          <field name="assigned_user_id" widget="many2one_avatar_user"/>
+          <field name="state" widget="badge"/>
+        </list>
+      </field>
+    </record>
+
+    <record id="view_sentiment_analysis_form" model="ir.ui.view">
+      <field name="name">sentiment.analysis.form</field>
+      <field name="model">sentiment.analysis</field>
+      <field name="arch" type="xml">
+        <form string="Sentiment Analysis">
+          <header>
+            <button name="action_analyze_sentiment" string="Analyze Sentiment" type="object"
+                    class="oe_highlight" attrs="{'invisible': [('state','!=','draft')]}"/>
+            <button name="action_set_reviewed" string="Mark as Reviewed" type="object"
+                    attrs="{'invisible': [('state','!=','analyzed')]}"/>
+            <button name="action_set_actioned" string="Action Taken" type="object"
+                    attrs="{'invisible': [('state','!=','reviewed')]}"/>
+            <button name="action_archive" string="Archive" type="object"
+                    attrs="{'invisible': [('state','=','archived')]}"/>
+            <field name="state" widget="statusbar" statusbar_visible="draft,analyzed,reviewed,actioned"/>
+          </header>
+          <sheet>
+            <widget name="web_ribbon" title="Action Required" bg_color="bg-danger"
+                    attrs="{'invisible': [('action_required','=',False)]}"/>
+            <div class="oe_title"><h1><field name="name" readonly="1"/></h1></div>
+            <group>
+              <group>
+                <field name="partner_id" options="{'no_open': True}"/>
+                <field name="source_type"/>
+                <field name="source_reference"/>
+                <field name="crm_lead_id" attrs="{'invisible': [('source_type','!=','crm')]}"/>
+              </group>
+              <group>
+                <field name="sentiment" widget="badge"/>
+                <field name="sentiment_score" widget="progressbar"/>
+                <field name="confidence_level"/>
+                <field name="emotions"/>
+                <field name="priority" widget="priority"/>
+                <field name="assigned_user_id"/>
+              </group>
+            </group>
+            <group>
+              <group>
+                <field name="analysis_date"/>
+                <field name="response_deadline"/>
+              </group>
+              <group>
+                <field name="action_required"/>
+                <field name="company_id" groups="base.group_multi_company"/>
+              </group>
+            </group>
+            <notebook>
+              <page string="Content">
+                <field name="text_content" placeholder="Paste or type the text to analyze..."/>
+              </page>
+              <page string="Analysis Details">
+                <group>
+                  <field name="keywords"/>
+                  <field name="aspect_analysis"/>
+                  <field name="analysis_notes"/>
+                </group>
+              </page>
+            </notebook>
+          </sheet>
+          <div class="oe_chatter">
+            <field name="message_follower_ids"/>
+            <field name="activity_ids"/>
+            <field name="message_ids"/>
+          </div>
+        </form>
+      </field>
+    </record>
+
+    <record id="view_sentiment_analysis_search" model="ir.ui.view">
+      <field name="name">sentiment.analysis.search</field>
+      <field name="model">sentiment.analysis</field>
+      <field name="arch" type="xml">
+        <search>
+          <field name="name"/>
+          <field name="partner_id"/>
+          <field name="source_type"/>
+          <field name="assigned_user_id"/>
+          <filter string="Action Required" name="action_required" domain="[('action_required','=',True)]"/>
+          <filter string="Negative" name="negative" domain="[('sentiment','in',['negative','very_negative'])]"/>
+          <filter string="Positive" name="positive" domain="[('sentiment','in',['positive','very_positive'])]"/>
+          <separator/>
+          <filter string="My Analysis" name="my_analysis" domain="[('assigned_user_id','=',uid)]"/>
+          <filter string="Unassigned" name="unassigned" domain="[('assigned_user_id','=',False)]"/>
+          <group expand="0" string="Group By">
+            <filter string="Customer" name="grp_partner" context="{'group_by':'partner_id'}"/>
+            <filter string="Sentiment" name="grp_sentiment" context="{'group_by':'sentiment'}"/>
+            <filter string="Source" name="grp_source" context="{'group_by':'source_type'}"/>
+            <filter string="Assigned To" name="grp_user" context="{'group_by':'assigned_user_id'}"/>
+            <filter string="Date" name="grp_date" context="{'group_by':'analysis_date'}"/>
+          </group>
+        </search>
+      </field>
+    </record>
+
+    <record id="action_sentiment_analysis" model="ir.actions.act_window">
+      <field name="name">Sentiment Analysis</field>
+      <field name="res_model">sentiment.analysis</field>
+      <field name="view_mode">kanban,tree,form,graph,pivot</field>
+      <field name="context">{}</field>
+    </record>
+  </data>
+</odoo>

@@ -1,0 +1,6 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_sentiment_analysis_user,access.sentiment.analysis.user,model_sentiment_analysis,customer_sentiment_analysis.group_sentiment_user,1,1,1,0
+access_sentiment_analysis_manager,access.sentiment.analysis.manager,model_sentiment_analysis,customer_sentiment_analysis.group_sentiment_manager,1,1,1,1
+access_sentiment_config_user,access.sentiment.config.user,model_sentiment_config,customer_sentiment_analysis.group_sentiment_user,1,0,0,0
+access_sentiment_config_manager,access.sentiment.config.manager,model_sentiment_config,customer_sentiment_analysis.group_sentiment_manager,1,1,1,1
+access_bulk_sentiment_wizard,access.bulk.sentiment.wizard,model_bulk_sentiment_wizard,base.group_user,1,1,1,1
